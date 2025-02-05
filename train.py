@@ -131,7 +131,7 @@ def do_training(child_method="cloning", max_generations=20, mutation_rate=0.2, g
         # Get top KEEP_BEST models
         best = ratings[-KEEP_BEST:]
 
-        generation_scores.append([best[-1][0]])
+        generation_scores.append(best[-1][0])
 
         print("")
         print(f"Score of generation {generation}:")
