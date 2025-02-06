@@ -75,37 +75,43 @@ class GUI:
         ystep = 60
 
         text_surface = self.debug_font.render(
-            f"height =\n{state["height"]:.3f} ", False, (255, 255, 255)
+            h = state["height"]
+            f"height =\n{h:.3f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep
 
         text_surface = self.debug_font.render(
-            f"speed =\n{state["speed"]:.6f} ", False, (255, 255, 255)
+            s = state["speed"]
+            f"speed =\n{s:.6f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep
 
         text_surface = self.debug_font.render(
-            f"vert_vel =\n{state["vert_vel"]:+.5f} ", False, (255, 255, 255)
+            v = state["vert_vel"]
+            f"vert_vel =\n{v:+.5f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep
 
         text_surface = self.debug_font.render(
-            f"next_dist =\n{state["next_dist"]:.3f} ", False, (255, 255, 255)
+            d = state["next_dist"]
+            f"next_dist =\n{d:.3f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep
 
         text_surface = self.debug_font.render(
-            f"next_height =\n{state["next_height"]:.3f} ", False, (255, 255, 255)
+            h = state["next_height"]
+            f"next_height =\n{h:.3f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep + 20
 
         text_surface = self.debug_font.render(
-            f"frame =\n{state["frame"]} ", False, (255, 255, 255)
+            f = state["frame"]
+            f"frame =\n{f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep

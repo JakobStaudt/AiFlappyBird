@@ -2,7 +2,6 @@ import flappy
 import random
 import torch
 from torch import nn
-import gui
 import time
 import pygame
 
@@ -98,6 +97,7 @@ def get_input(model, state, device="cpu"):
     return logits.item()
 
 def do_training(child_method="cloning", max_generations=20, mutation_rate=0.2, generation_callback=None):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     device = "cpu"
 
     # Generate the number of models comprising one generation
@@ -189,6 +189,8 @@ def do_training(child_method="cloning", max_generations=20, mutation_rate=0.2, g
     return generation_scores
 
 if __name__ == "__main__":
+    import gui
+
     g = gui.GUI()
 
     def generation_callback(generation, models, ratings, seeds, device):
