@@ -14,10 +14,10 @@ MAX_GENERATIONS = 50
 
 # How children are created from best models
 # One of cloning, crossover_pick, crossover_avg
-CHILD_METHOD = "crossover_pick"
+CHILD_METHOD = "cloning"
 
 # Stdev of random numbers applied to weights during mutation
-MUTATION_RATE = 0.5
+MUTATION_RATE = 0.1
 # Exponent used to scale mutation rate per copy
 MUTATION_RATE_SCALE_EXPONENT = 3
 
@@ -247,8 +247,6 @@ if __name__ == "__main__":
                     states[i] = state
 
                 state = states[0]
-
-                print(state)
 
                 if state is None:
                     break

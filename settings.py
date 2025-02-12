@@ -7,5 +7,5 @@ speed_increment = 0.0000001
 input_cooldown = 10
 
 pipe_width = 0.13
-gap_height = 0.13
+gap_height = 0.15
 gate_span = 0.5
