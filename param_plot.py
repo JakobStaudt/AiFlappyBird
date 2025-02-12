@@ -4,16 +4,16 @@ import json
 import matplotlib.pyplot as plt
 import time
 from multiprocessing import Queue
-from multiprocessing import Process
+from multiprocessing import Pool
 
-MAX_GENERATIONS = 30
+MAX_GENERATIONS = 100
 
 MUTATION_RATES = [0.01, 0.1, 0.2, 0.5, 1]
 CHILD_METHODS = ["cloning", "crossover_pick", "crossover_avg"]
 
-RUNS_PER_PARAMSET = 30
+RUNS_PER_PARAMSET = 100
 
-def run_thread(params, queue):
+def run_thread(params,):
     mutation_rate, child_method = params
 
     avg_scores = [0 for _ in range(MAX_GENERATIONS)]
@@ -23,9 +23,10 @@ def run_thread(params, queue):
         for i, score in enumerate(gen_scores):
             avg_scores[i] += score
         all_scores.append(gen_scores)
+    print("Calculating avg scores")
     avg_scores = [s / RUNS_PER_PARAMSET for s in avg_scores]
-    queue.put((params, avg_scores, all_scores))
-
+    print("Pushing into queue")
+    return (params, avg_scores, all_scores)
 
 if __name__ == "__main__":
     result_queue = Queue()
@@ -38,25 +39,14 @@ if __name__ == "__main__":
 
     param_options = list(itertools.product(MUTATION_RATES, CHILD_METHODS))
 
-    param_scores = {}
-    processes = []
-    for param_i, params in enumerate(param_options):
-        print(f"Running param set {param_i} of {len(param_options)}")
-
-        p = Process(target=run_thread, args=(params, result_queue))
-        processes.append(p)
-        p.start()
-
-    for p in processes:
-        p.join()
+    p = Pool()
+    retvals = p.map(run_thread, param_options)
 
     print("All processes completed")
 
-    while True:
-        if result_queue.empty():
-            break
-        print("Queue contains data")
-        params, avg_scores, all_scores = result_queue.get_nowait()
+    param_scores = {}
+
+    for (params, avg_scores, all_scores) in retvals:
         param_scores[str(params)] = (avg_scores, all_scores)
     
     print("Writing data to file")
