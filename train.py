@@ -19,7 +19,7 @@ CHILD_METHOD = "crossover_pick"
 # Stdev of random numbers applied to weights during mutation
 MUTATION_RATE = 0.3
 # Exponent used to scale mutation rate per copy
-MUTATION_RATE_SCALE_EXPONENT = 3
+MUTATION_RATE_SCALE_EXPONENT = 4
 
 # How many games each generation plays for eval
 GAMES_PER_GEN = 1
@@ -29,7 +29,7 @@ GAMES_PER_GEN = 1
 STEPS_PER_FRAME = 1
 
 # Number of generations after which best model should be shown to user
-SAMPLE_SHOW_GENERATION_STEP = 10
+SAMPLE_SHOW_GENERATION_STEP = 1000
 
 
 def play_game(model, device="cpu"):
@@ -186,6 +186,9 @@ def do_training(child_method="cloning", max_generations=20, mutation_rate=0.2, g
             for param in model.parameters():
                 # Alter weights with normal distribution random numbers
                 param.data += mutation_rate * model_scale * torch.randn_like(param)
+
+    torch.save(best[-1][1], "highscore.dat")
+
     return generation_scores
 
 if __name__ == "__main__":
