@@ -37,7 +37,7 @@ class GUI:
             return True
         return False
 
-    def draw_state(self, state, frame=None):
+    def draw_state(self, state, frame=None, secondary_states=None):
         self.screen.fill((0, 0, 0))
 
         pygame.draw.rect(
@@ -61,6 +61,15 @@ class GUI:
             ),
         )
 
+        if secondary_states is not None:
+            for s_state in secondary_states:
+                if s_state is None:
+                    continue
+                pygame.draw.rect(
+                    self.screen,
+                    (0, 0, 255),
+                    pygame.Rect(10, 480 - 480 * s_state["height"] - 10, 20, 20),
+                )
         pygame.draw.rect(
             self.screen,
             (255, 0, 0),
@@ -74,50 +83,51 @@ class GUI:
         y = 50
         ystep = 60
 
+        h = state["height"]
         text_surface = self.debug_font.render(
-            h = state["height"]
             f"height =\n{h:.3f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep
 
+        s = state["speed"]
         text_surface = self.debug_font.render(
-            s = state["speed"]
             f"speed =\n{s:.6f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep
 
+        v = state["vert_vel"]
         text_surface = self.debug_font.render(
-            v = state["vert_vel"]
             f"vert_vel =\n{v:+.5f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep
 
+        d = state["next_dist"]
         text_surface = self.debug_font.render(
-            d = state["next_dist"]
             f"next_dist =\n{d:.3f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep
 
+        h = state["next_height"]
         text_surface = self.debug_font.render(
-            h = state["next_height"]
             f"next_height =\n{h:.3f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep + 20
 
+        f = state["frame"]
         text_surface = self.debug_font.render(
-            f = state["frame"]
             f"frame =\n{f} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
         y += ystep
 
+        li = state["last_input"]
         text_surface = self.debug_font.render(
-            f"last_input =\n{state["last_input"]} ", False, (255, 255, 255)
+            f"last_input =\n{li} ", False, (255, 255, 255)
         )
         self.screen.blit(text_surface, (500, y))
 

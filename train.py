@@ -17,7 +17,7 @@ MAX_GENERATIONS = 50
 CHILD_METHOD = "crossover_pick"
 
 # Stdev of random numbers applied to weights during mutation
-MUTATION_RATE = 0.3
+MUTATION_RATE = 0.5
 # Exponent used to scale mutation rate per copy
 MUTATION_RATE_SCALE_EXPONENT = 3
 
@@ -194,15 +194,22 @@ if __name__ == "__main__":
     g = gui.GUI()
 
     def generation_callback(generation, models, ratings, seeds, device):
-        model = models[0]
-        model.load_state_dict(ratings[-1][1])
         seed = seeds[0]
+        for i, model in enumerate(models):
+            model.load_state_dict(ratings[-i][1])
         # Check if this generation should be shown to user:
         if generation % SAMPLE_SHOW_GENERATION_STEP == 0:
             print("Showing best model")
-            random.seed(seed)
 
-            state = flappy.get_initial_state()
+            rand_gen = []
+            for m in models:
+                rand_gen.append(random.Random(seed))
+
+            states = []
+            for i, m in enumerate(models):
+                rand_gen[0].seed(seed)
+                state = flappy.get_initial_state(rand_gen=rand_gen[0])
+                states.append(state)
 
             frame = 0
             # Game steps to do per frame shown (time acceleration)
@@ -224,16 +231,28 @@ if __name__ == "__main__":
                     steps_per_frame = max(1, steps_per_frame)
 
                 # Do steps_per_frame steps
-                for i in range(steps_per_frame):
-                    pressed = get_input(model, state, device)
-                    state = flappy.propagate(state, pressed)
-                    frame += 1
+                rand_state = rand_gen[0].getstate()
+                for i, m in enumerate(models):
+                    rand_gen[0].setstate(rand_state)
+                    state = states[i]
                     if state is None:
-                        # Game ended
-                        break
+                        continue
+                    for i in range(steps_per_frame):
+                        pressed = get_input(m, state, device)
+                        state = flappy.propagate(state, pressed, rand_gen=rand_gen[0])
+                        frame += 1
+                        if state is None:
+                            # Game ended
+                            break
+                    states[i] = state
+
+                state = states[0]
+
+                print(state)
+
                 if state is None:
                     break
-                g.draw_state(state, frame)
+                g.draw_state(state, frame, secondary_states=states)
             print("Done")
 
     do_training(child_method=CHILD_METHOD, max_generations=MAX_GENERATIONS, mutation_rate=MUTATION_RATE, generation_callback=generation_callback)

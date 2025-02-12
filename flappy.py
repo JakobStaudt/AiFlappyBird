@@ -2,14 +2,18 @@ import random
 import settings
 
 
-def get_height():
+def get_height(rand_gen=None):
     """
     Generate a gap height inside the span specified in the settings
     """
-    return 0.5 * (1 - settings.gate_span) + settings.gate_span * random.random()
+    if rand_gen:
+        rand = rand_gen.random()
+    else:
+        rand = random.random()
+    return 0.5 * (1 - settings.gate_span) + settings.gate_span * rand
 
 
-def get_initial_state():
+def get_initial_state(rand_gen=None):
     """
     Return game state for start of game
     """
@@ -18,13 +22,13 @@ def get_initial_state():
         "speed": settings.start_speed,
         "vert_vel": 0,
         "next_dist": 1,
-        "next_height": get_height(),
+        "next_height": get_height(rand_gen=rand_gen),
         "frame": 0,
         "last_input": -1,
     }
 
 
-def propagate(state, pressed):
+def propagate(state, pressed, rand_gen=None):
     """
     Take the previous game state and a bool indicating whether up button
     is pressed and return the next game state. Return None if game ended.
@@ -70,6 +74,6 @@ def propagate(state, pressed):
         # If bird has passed current pipe, generate a new one in the distance
         if state["next_dist"] <= 0:
             state["next_dist"] = 1
-            state["next_height"] = get_height()
+            state["next_height"] = get_height(rand_gen=rand_gen)
 
     return state
